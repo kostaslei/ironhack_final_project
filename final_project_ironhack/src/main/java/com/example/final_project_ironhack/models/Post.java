@@ -1,6 +1,8 @@
 package com.example.final_project_ironhack.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -17,6 +19,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Content is required")
+    @Size(max = 1000)
     private String content;
     private String imageUrl;
     private int likes;

@@ -1,6 +1,8 @@
 package com.example.final_project_ironhack.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -17,8 +19,16 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Size(max = 100)
     private String title;
+
+    @NotBlank(message = "Description is required")
+    @Size(max = 500)
     private String description;
+
+    @NotBlank(message = "Category is required")
+    @Size(max = 50)
     private String category;
 
     @Enumerated(EnumType.STRING)

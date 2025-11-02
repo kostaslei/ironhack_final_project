@@ -1,6 +1,8 @@
 package com.example.final_project_ironhack.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -16,6 +18,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Comment content is required")
+    @Size(max = 500)
     private String content;
     private LocalDateTime createdAt = LocalDateTime.now();
 

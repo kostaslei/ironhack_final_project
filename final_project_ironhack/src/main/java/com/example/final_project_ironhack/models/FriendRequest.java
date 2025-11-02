@@ -1,6 +1,7 @@
 package com.example.final_project_ironhack.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -17,11 +18,13 @@ public class FriendRequest {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", nullable = false)
+    @NotNull
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id")
+    @JoinColumn(name = "receiver_id", nullable = false)
+    @NotNull
     private User receiver;
 
     @Enumerated(EnumType.STRING)

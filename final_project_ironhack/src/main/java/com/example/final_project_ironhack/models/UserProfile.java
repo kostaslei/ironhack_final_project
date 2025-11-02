@@ -1,6 +1,8 @@
 package com.example.final_project_ironhack.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,17 +25,25 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name is required")
+    @Size(max = 50)
     private String name;
+
+    @Size(max = 200, message = "Max bio size is 200 characters")
     private String bio;
+
+    @Size(max = 100)
     private String location;
     private String profileImageUrl;
 
+    @NotBlank(message = "Role/Job is required")
+    private String jobTitle;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
+
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_skills",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id")
-    )
     private Set<Skill> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

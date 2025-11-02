@@ -1,6 +1,8 @@
 package com.example.final_project_ironhack.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -16,6 +18,8 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Message content is required")
+    @Size(max = 1000)
     private String content;
     private boolean read = false;
     private LocalDateTime sentAt = LocalDateTime.now();

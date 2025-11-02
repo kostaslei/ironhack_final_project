@@ -1,8 +1,10 @@
 package com.example.final_project_ironhack.controllers;
 
 import com.example.final_project_ironhack.models.User;
+import com.example.final_project_ironhack.models.UserProfile;
 import com.example.final_project_ironhack.repositories.UserRepository;
 import com.example.final_project_ironhack.services.JwtService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,15 +21,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully!");
-    }
-
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody Map<String, String> credentials) {
         var user = userRepository.findByEmail(credentials.get("email"))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -37,5 +32,19 @@ public class AuthController {
 
         String token = jwtService.generateToken(user.getEmail());
         return ResponseEntity.ok(Map.of("token", token));
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestBody User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Create empty profile linked to user
+        UserProfile profile = new UserProfile();
+        profile.setUser(user);
+        user.setProfile(profile);
+
+        userRepository.save(user);
+
+        return "User registered successfully!";
     }
 }

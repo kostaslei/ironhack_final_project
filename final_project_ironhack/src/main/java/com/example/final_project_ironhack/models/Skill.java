@@ -1,7 +1,11 @@
 package com.example.final_project_ironhack.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -16,11 +20,15 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Skill name is required")
+    @Size(max = 50)
     private String name;
 
     @ManyToMany(mappedBy = "skills")
-    private Set<User> users;
+    @Builder.Default
+    private Set<UserProfile> users = new HashSet<>();
 
     @ManyToMany(mappedBy = "requiredSkills")
-    private Set<Project> projects;
+    @Builder.Default
+    private Set<Project> projects = new HashSet<>();
 }

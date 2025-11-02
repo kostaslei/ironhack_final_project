@@ -1,5 +1,6 @@
 package com.example.final_project_ironhack.services;
 
+import com.example.final_project_ironhack.models.User;
 import com.example.final_project_ironhack.models.UserProfile;
 import com.example.final_project_ironhack.repositories.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,28 +20,55 @@ public class UserProfileService {
 
     public UserProfile getProfileById(Long id) {
         return userProfileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("UserProfile not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
     }
 
-    public UserProfile createProfile(UserProfile userProfile) {
-        return userProfileRepository.save(userProfile);
+    public List<UserProfile> getProfilesByLocation(String location) {
+        return userProfileRepository.findByLocationIgnoreCase(location);
     }
 
-    public UserProfile updateProfile(Long id, UserProfile updatedProfile) {
-        UserProfile existingProfile = getProfileById(id);
-
-        existingProfile.setName(updatedProfile.getName());
-        existingProfile.setBio(updatedProfile.getBio());
-        existingProfile.setLocation(updatedProfile.getLocation());
-        existingProfile.setProfileImageUrl(updatedProfile.getProfileImageUrl());
-        existingProfile.setSkills(updatedProfile.getSkills());
-        // For posts, sent/received requests, projects, chats: update only if needed
-
-        return userProfileRepository.save(existingProfile);
+    public List<UserProfile> getProfilesBySkill(String skillName) {
+        return userProfileRepository.findBySkills_NameIgnoreCase(skillName);
     }
 
-    public void deleteProfile(Long id) {
-        userProfileRepository.deleteById(id);
+    public List<UserProfile> getProfilesByJobTitle(String jobTitle) {
+        return userProfileRepository.findByJobTitleContainingIgnoreCase(jobTitle);
+    }
+
+    public List<UserProfile> getProfilesBySkills(List<String> skills) {
+        return userProfileRepository.findBySkills(skills);
+    }
+
+    public UserProfile getProfileByUser(User user) {
+        return userProfileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+    }
+
+    public UserProfile createProfile(User user, UserProfile profile) {
+        if (userProfileRepository.findByUser(user).isPresent()) {
+            throw new RuntimeException("Profile already exists for this user");
+        }
+        profile.setUser(user);
+        return userProfileRepository.save(profile);
+    }
+
+    public UserProfile updateProfile(User user, UserProfile updatedProfile) {
+        UserProfile existing = userProfileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        existing.setName(updatedProfile.getName());
+        existing.setBio(updatedProfile.getBio());
+        existing.setLocation(updatedProfile.getLocation());
+        existing.setProfileImageUrl(updatedProfile.getProfileImageUrl());
+        existing.setJobTitle(updatedProfile.getJobTitle());
+
+        return userProfileRepository.save(existing);
+    }
+
+    public void deleteProfile(User user) {
+        UserProfile profile = userProfileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+        userProfileRepository.delete(profile);
     }
 }
 
