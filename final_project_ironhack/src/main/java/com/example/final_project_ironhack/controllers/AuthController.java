@@ -4,6 +4,7 @@ import com.example.final_project_ironhack.models.User;
 import com.example.final_project_ironhack.repositories.UserRepository;
 import com.example.final_project_ironhack.services.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +20,14 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public ResponseEntity<String> register(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return "User registered successfully!";
+        return ResponseEntity.ok("User registered successfully!");
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
         var user = userRepository.findByEmail(credentials.get("email"))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -35,6 +36,6 @@ public class AuthController {
         }
 
         String token = jwtService.generateToken(user.getEmail());
-        return Map.of("token", token);
+        return ResponseEntity.ok(Map.of("token", token));
     }
 }
