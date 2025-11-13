@@ -2,8 +2,11 @@ package com.example.final_project_ironhack.controllers;
 
 import com.example.final_project_ironhack.models.FriendRequest;
 import com.example.final_project_ironhack.models.User;
+import com.example.final_project_ironhack.models.UserProfile;
+import com.example.final_project_ironhack.repositories.UserProfileRepository;
 import com.example.final_project_ironhack.repositories.UserRepository;
 import com.example.final_project_ironhack.services.FriendRequestService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +28,8 @@ public class FriendRequestController {
     public ResponseEntity<List<FriendRequest>> getReceivedRequests(@AuthenticationPrincipal Jwt jwt) {
         String email = jwt.getSubject();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        List<FriendRequest> requests = friendRequestService.getReceivedRequests(user);
+        UserProfile userProfile = user.getProfile();
+        List<FriendRequest> requests = friendRequestService.getReceivedRequests(userProfile);
         return ResponseEntity.ok(requests);
     }
 
@@ -33,18 +37,19 @@ public class FriendRequestController {
     public ResponseEntity<List<FriendRequest>> getSentRequests(@AuthenticationPrincipal Jwt jwt) {
         String email = jwt.getSubject();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        List<FriendRequest> requests = friendRequestService.getSentRequests(user);
+        UserProfile userProfile = user.getProfile();
+        List<FriendRequest> requests = friendRequestService.getSentRequests(userProfile);
         return ResponseEntity.ok(requests);
     }
 
-    @PostMapping("/send/{receiverId}")
+    @PostMapping("/send")
     public ResponseEntity<FriendRequest> sendRequest(@AuthenticationPrincipal Jwt jwt,
-                                                     @PathVariable Long receiverId) {
+                                                     @Valid  @RequestBody UserProfile receiverProfile) {
         String email = jwt.getSubject();
         User sender = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
-        FriendRequest request = friendRequestService.sendRequest(sender, receiver);
+        UserProfile senderProfile = sender.getProfile();
+        FriendRequest request = friendRequestService.sendRequest(senderProfile, receiverProfile);
         return ResponseEntity.created(URI.create("/api/friends/" + request.getId())).body(request);
     }
 
@@ -54,8 +59,9 @@ public class FriendRequestController {
                                                         @RequestParam FriendRequest.Status status) {
         String email = jwt.getSubject();
         User receiver = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        UserProfile receiverProfile = receiver.getProfile();
 
-        FriendRequest updated = friendRequestService.updateRequestStatus(receiver, requestId, status);
+        FriendRequest updated = friendRequestService.updateRequestStatus(receiverProfile, requestId, status);
         return ResponseEntity.ok(updated);
     }
 
@@ -65,7 +71,8 @@ public class FriendRequestController {
         String email = jwt.getSubject();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        friendRequestService.deleteRequest(user, requestId);
+        UserProfile userProfile = user.getProfile();
+        friendRequestService.deleteRequest(userProfile, requestId);
         return ResponseEntity.noContent().build();
     }
 }

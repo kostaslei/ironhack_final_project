@@ -1,5 +1,6 @@
 package com.example.final_project_ironhack.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Email;
@@ -35,5 +36,6 @@ public class User {
     private String role = "USER";  // e.g. ADMIN, USER, etc.
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private UserProfile profile;
 }

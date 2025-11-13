@@ -2,7 +2,7 @@ package com.example.final_project_ironhack.services;
 
 import com.example.final_project_ironhack.models.Chat;
 import com.example.final_project_ironhack.models.Message;
-import com.example.final_project_ironhack.models.User;
+import com.example.final_project_ironhack.models.UserProfile;
 import com.example.final_project_ironhack.repositories.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class MessageService {
         return messageRepository.findByChatOrderBySentAtAsc(chat);
     }
 
-    public List<Message> getMessagesBySender(User sender) {
+    public List<Message> getMessagesBySender(UserProfile sender) {
         return messageRepository.findBySender(sender);
     }
 
@@ -28,13 +28,13 @@ public class MessageService {
                 .orElseThrow(() -> new RuntimeException("Message not found"));
     }
 
-    public Message sendMessage(User sender, Chat chat, Message message) {
+    public Message sendMessage(UserProfile sender, Chat chat, Message message) {
         message.setSender(sender);
         message.setChat(chat);
         return messageRepository.save(message);
     }
 
-    public Message updateMessage(User sender, Long messageId, Message updatedMessage) {
+    public Message updateMessage(UserProfile sender, Long messageId, Message updatedMessage) {
         Message existing = messageRepository.findById(messageId)
                 .orElseThrow(() -> new RuntimeException("Message not found"));
 
@@ -44,11 +44,10 @@ public class MessageService {
 
         existing.setContent(updatedMessage.getContent());
         existing.setRead(updatedMessage.isRead());
-
         return messageRepository.save(existing);
     }
 
-    public void deleteMessage(User sender, Long messageId) {
+    public void deleteMessage(UserProfile sender, Long messageId) {
         Message existing = messageRepository.findById(messageId)
                 .orElseThrow(() -> new RuntimeException("Message not found"));
 

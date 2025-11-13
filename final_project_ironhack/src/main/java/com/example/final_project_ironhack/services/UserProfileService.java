@@ -24,7 +24,7 @@ public class UserProfileService {
     }
 
     public List<UserProfile> getProfilesByLocation(String location) {
-        return userProfileRepository.findByLocationIgnoreCase(location);
+        return userProfileRepository.findByLocationContainingIgnoreCase(location);
     }
 
     public List<UserProfile> getProfilesBySkill(String skillName) {

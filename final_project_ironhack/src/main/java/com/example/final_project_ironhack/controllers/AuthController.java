@@ -22,7 +22,7 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody Map<String, String> credentials) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
         var user = userRepository.findByEmail(credentials.get("email"))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // Create empty profile linked to user
@@ -45,6 +45,6 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return "User registered successfully!";
+        return ResponseEntity.ok(Map.of("message", "User registered successfully!"));
     }
 }

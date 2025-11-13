@@ -1,5 +1,8 @@
 package com.example.final_project_ironhack.security;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -12,6 +15,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class JwtConfig {
@@ -25,13 +29,6 @@ public class JwtConfig {
             throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
         SecretKeySpec key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(key).build();
-    }
-
-    @Bean
-    public JwtEncoder jwtEncoder() {
-        SecretKeySpec key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
-        JWKSource<SecurityContext> jwkSource = new ImmutableSecret<>(key);
-        return new NimbusJwtEncoder(jwkSource);
     }
 }
 

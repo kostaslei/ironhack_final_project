@@ -15,19 +15,30 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
-@RequiredArgsConstructor
 public class JwtService {
 
-    private final JwtEncoder jwtEncoder;
+    private final String secret;
 
-    public String generateToken(String subject) {
-        Instant now = Instant.now();
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-                .subject(subject)
-                .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .build();
+    public JwtService(@Value("${spring.security.oauth2.resourceserver.jwt.secret-key}") String secret) {
+        this.secret = secret;
+    }
 
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    public String generateToken(String username) {
+        try {
+            JWSSigner signer = new MACSigner(secret.getBytes());
+
+            JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                    .subject(username)
+                    .issueTime(new Date())
+                    .expirationTime(new Date(System.currentTimeMillis() + 3600_000))
+                    .build();
+
+            SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
+            signedJWT.sign(signer);
+
+            return signedJWT.serialize();
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating token", e);
+        }
     }
 }

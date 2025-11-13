@@ -1,7 +1,7 @@
 package com.example.final_project_ironhack.controllers;
 
 import com.example.final_project_ironhack.models.Comment;
-import com.example.final_project_ironhack.models.Post;
+import com.example.final_project_ironhack.models.PostBase;
 import com.example.final_project_ironhack.models.User;
 import com.example.final_project_ironhack.repositories.PostRepository;
 import com.example.final_project_ironhack.repositories.UserRepository;
@@ -27,7 +27,7 @@ public class CommentController {
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<Comment>> getCommentsByPost(@PathVariable Long postId) {
-        Post post = postRepository.findById(postId)
+        PostBase post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         List<Comment> comments = commentService.getCommentsByPost(post);
         return ResponseEntity.ok(comments);
@@ -41,7 +41,7 @@ public class CommentController {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Post post = postRepository.findById(postId)
+        PostBase post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
         Comment created = commentService.createComment(user, post, comment);

@@ -1,5 +1,7 @@
 package com.example.final_project_ironhack.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -20,12 +22,14 @@ public class FriendRequest {
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     @NotNull
-    private User sender;
+    @JsonBackReference("sent")// prevent recursion
+    private UserProfile sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
     @NotNull
-    private User receiver;
+    @JsonBackReference("received")
+    private UserProfile receiver;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;

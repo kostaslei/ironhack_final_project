@@ -1,7 +1,8 @@
 package com.example.final_project_ironhack.services;
 
 import com.example.final_project_ironhack.models.Comment;
-import com.example.final_project_ironhack.models.Post;
+import com.example.final_project_ironhack.models.PostBase;
+import com.example.final_project_ironhack.models.PostBase;
 import com.example.final_project_ironhack.models.User;
 import com.example.final_project_ironhack.repositories.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    public List<Comment> getCommentsByPost(Post post) {
+    public List<Comment> getCommentsByPost(PostBase post) {
         return commentRepository.findByPost(post);
     }
 
@@ -28,7 +29,7 @@ public class CommentService {
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
     }
 
-    public Comment createComment(User user, Post post, Comment comment) {
+    public Comment createComment(User user, PostBase post, Comment comment) {
         comment.setUser(user);
         comment.setPost(post);
         return commentRepository.save(comment);

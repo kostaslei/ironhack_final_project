@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
     Optional<UserProfile> findByUser(User user);
-    List<UserProfile> findByLocationIgnoreCase(String location);
+    List<UserProfile> findByLocationContainingIgnoreCase(String location);
     List<UserProfile> findByJobTitleContainingIgnoreCase(String jobTitle);
 
     List<UserProfile> findBySkills_NameIgnoreCase(String skillName);

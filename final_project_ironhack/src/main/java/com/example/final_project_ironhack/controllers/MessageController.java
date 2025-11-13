@@ -3,6 +3,7 @@ package com.example.final_project_ironhack.controllers;
 import com.example.final_project_ironhack.models.Chat;
 import com.example.final_project_ironhack.models.Message;
 import com.example.final_project_ironhack.models.User;
+import com.example.final_project_ironhack.models.UserProfile;
 import com.example.final_project_ironhack.repositories.ChatRepository;
 import com.example.final_project_ironhack.repositories.UserRepository;
 import com.example.final_project_ironhack.services.MessageService;
@@ -38,13 +39,15 @@ public class MessageController {
                                                @PathVariable Long chatId,
                                                @Valid @RequestBody Message message) {
         String email = jwt.getSubject();
-        User sender = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserProfile senderProfile = user.getProfile();
 
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new RuntimeException("Chat not found"));
 
-        Message sentMessage = messageService.sendMessage(sender, chat, message);
+        Message sentMessage = messageService.sendMessage(senderProfile, chat, message);
         return ResponseEntity.created(URI.create("/api/messages/" + sentMessage.getId()))
                 .body(sentMessage);
     }
@@ -54,10 +57,11 @@ public class MessageController {
                                                  @PathVariable Long messageId,
                                                  @Valid @RequestBody Message message) {
         String email = jwt.getSubject();
-        User sender = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Message updated = messageService.updateMessage(sender, messageId, message);
+        UserProfile senderProfile = user.getProfile();
+        Message updated = messageService.updateMessage(senderProfile, messageId, message);
         return ResponseEntity.ok(updated);
     }
 
@@ -65,11 +69,11 @@ public class MessageController {
     public ResponseEntity<Void> deleteMessage(@AuthenticationPrincipal Jwt jwt,
                                               @PathVariable Long messageId) {
         String email = jwt.getSubject();
-        User sender = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        messageService.deleteMessage(sender, messageId);
+        UserProfile senderProfile = user.getProfile(); // ✅ get profile
+        messageService.deleteMessage(senderProfile, messageId); // ✅ Pass UserProfile
         return ResponseEntity.noContent().build();
     }
 }
-

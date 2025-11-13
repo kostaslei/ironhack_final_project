@@ -2,6 +2,7 @@ package com.example.final_project_ironhack.services;
 
 import com.example.final_project_ironhack.models.FriendRequest;
 import com.example.final_project_ironhack.models.User;
+import com.example.final_project_ironhack.models.UserProfile;
 import com.example.final_project_ironhack.repositories.FriendRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,15 @@ public class FriendRequestService {
 
     private final FriendRequestRepository friendRequestRepository;
 
-    public List<FriendRequest> getReceivedRequests(User user) {
-        return friendRequestRepository.findByReceiver(user);
+    public List<FriendRequest> getReceivedRequests(UserProfile userProfile) {
+        return friendRequestRepository.findByReceiver(userProfile);
     }
 
-    public List<FriendRequest> getSentRequests(User user) {
-        return friendRequestRepository.findBySender(user);
+    public List<FriendRequest> getSentRequests(UserProfile userProfile) {
+        return friendRequestRepository.findBySender(userProfile);
     }
 
-    public FriendRequest sendRequest(User sender, User receiver) {
+    public FriendRequest sendRequest(UserProfile sender, UserProfile receiver) {
         if (friendRequestRepository.findBySenderAndReceiver(sender, receiver).isPresent()) {
             throw new RuntimeException("Friend request already exists");
         }
@@ -36,7 +37,7 @@ public class FriendRequestService {
         return friendRequestRepository.save(request);
     }
 
-    public FriendRequest updateRequestStatus(User receiver, Long requestId, FriendRequest.Status status) {
+    public FriendRequest updateRequestStatus(UserProfile receiver, Long requestId, FriendRequest.Status status) {
         FriendRequest request = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Friend request not found"));
 
@@ -48,11 +49,11 @@ public class FriendRequestService {
         return friendRequestRepository.save(request);
     }
 
-    public void deleteRequest(User user, Long requestId) {
+    public void deleteRequest(UserProfile userProfile, Long requestId) {
         FriendRequest request = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Friend request not found"));
 
-        if (!request.getSender().getId().equals(user.getId()) && !request.getReceiver().getId().equals(user.getId())) {
+        if (!request.getSender().getId().equals(userProfile.getId()) && !request.getReceiver().getId().equals(userProfile.getId())) {
             throw new RuntimeException("You can only delete requests involving you");
         }
 

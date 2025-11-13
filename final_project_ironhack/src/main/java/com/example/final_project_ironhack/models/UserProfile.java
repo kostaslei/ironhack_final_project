@@ -1,5 +1,8 @@
 package com.example.final_project_ironhack.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,9 +28,8 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is required")
     @Size(max = 50)
-    private String name;
+    private String name = "New User";
 
     @Size(max = 200, message = "Max bio size is 200 characters")
     private String bio;
@@ -36,29 +38,33 @@ public class UserProfile {
     private String location;
     private String profileImageUrl;
 
-    @NotBlank(message = "Role/Job is required")
+    @Size(max = 50)
     private String jobTitle;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JsonBackReference
     private User user;
 
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Skill> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL)
+    private List<PostBase> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    @JsonManagedReference("sent")
     private List<FriendRequest> sentRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    @JsonManagedReference("received")
     private List<FriendRequest> receivedRequests = new ArrayList<>();
 
     @ManyToMany(mappedBy = "members")
     private Set<Project> projects = new HashSet<>();
 
     @ManyToMany(mappedBy = "participants")
+    @JsonIgnore
     private Set<Chat> chats = new HashSet<>();
 
 }

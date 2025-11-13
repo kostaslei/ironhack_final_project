@@ -40,9 +40,9 @@ public class Project {
     @JoinTable(
             name = "project_members",
             joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            inverseJoinColumns = @JoinColumn(name = "user_profile_id")
     )
-    private Set<User> members = new HashSet<>();
+    private Set<UserProfile> members = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
