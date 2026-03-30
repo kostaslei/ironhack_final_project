@@ -19,6 +19,7 @@ The app aims to strengthen Barcelona’s creative and tech ecosystem by connecti
 
 ## 🧱 UML Class Diagram
 
+```
 +------------------------------------+
 | User |
 +------------------------------------+
@@ -118,9 +119,7 @@ Friendship (Friendship)
 | * requester: User |
 | * receiver: User |
 +------------------------------------+
-
-yaml
-Copy code
+```
 
 ---
 
@@ -132,56 +131,59 @@ Copy code
 - MySQL installed locally
 - Postman or cURL for API testing
 
-🧰 Technologies Used
-Layer	Technology
-Backend Framework	Spring Boot 3 (Java 17)
-Database	MySQL + JPA (Hibernate)
-Security	Spring Security + JWT (Bearer Tokens)
-API Design	RESTful API architecture
-Version Control	Git + GitHub
-Future Frontend Integration	React / Next.js 
+## 🧰 Technologies Used
+| Layer | Technology  |
+|-------|--------------|
+|Backend Framework|	Spring Boot 3 (Java 17)|
+|Database|	MySQL + JPA (Hibernate)|
+|Security|	Spring Security + JWT (Bearer Tokens)|
+|API Design|	RESTful API architecture|
+|Version Control|	Git + GitHub|
+|Future Frontend Integration|	React / Next.js |
 
-🧭 Controllers and Routes Structure
-Controller	Route Prefix	Description
-AuthController	/api/auth	Register and Login endpoints
-UserController	/api/users	Get user profiles, update bios, skills, etc.
-PostController	/api/posts	CRUD for posts and comments
-ProjectController	/api/projects	Create and manage collaboration projects
-MessageController	/api/messages	Send and retrieve private messages
-FriendshipController	/api/friends	Manage friend requests and connections
+---
 
-🔗 Extra Links
+## 🧭 Controllers and Routes Structure
+|Controller|	Route Prefix|	Description|
+|----------|------------------|----------------|
+|AuthController	|/api/auth	|Register and Login endpoints|
+|UserController	|/api/users	|Get user profiles, update bios, skills, etc.|
+|PostController	|/api/posts	|CRUD for posts and comments|
+|ProjectController	|/api/projects	|Create and manage collaboration projects|
+|MessageController	|/api/messages	|Send and retrieve private messages|
+|FriendshipController	|/api/friends	|Manage friend requests and connections|
 
-📑 Presentation Slides: 
+---
 
-🧑‍💻 GitHub Repository: https://github.com/kostaslei/ironhack_final_project
+## 🧭 Future Work
+- Add frontend using React or Vue.js
 
-🧭 Future Work
-✅ Add frontend using React or Vue.js
+- Enable real-time messaging with WebSockets
 
-✅ Enable real-time messaging with WebSockets
+- Implement AI skill matching to recommend collaborators
 
-✅ Implement AI skill matching to recommend collaborators
+- Add notifications for messages and project updates
 
-✅ Add notifications for messages and project updates
+- Add OAuth (Google/GitHub) login
 
-✅ Add OAuth (Google/GitHub) login
+- Add search filters for projects by category or skill
+  
+---
 
-✅ Add search filters for projects by category or skill
+## 📚 Resources
+- Spring Boot Official Documentation
 
-📚 Resources
-Spring Boot Official Documentation
+- Spring Security Guide
 
-Spring Security Guide
+- JWT Authentication in Spring Boot
 
-JWT Authentication in Spring Boot
+- MySQL Reference Manual
 
-MySQL Reference Manual
+- draw.io for UML Diagrams
 
-draw.io for UML Diagrams
 
-Ironhack Java Bootcamp Resources
+**👨‍💻 Author: Konstantinos Leivaditis**
 
-👨‍💻 Author: Konstantinos Leivaditis
-🏙️ Location: Barcelona
-📆 Ironhack Final Project – 2025
+**🏙️ Location: Barcelona**
+
+**📆 Ironhack Final Project – 2025**
